@@ -1,0 +1,258 @@
+--- CREATE DATABASE DB COLLATE Slovak_CI_AS; ---
+
+
+***********************************************2X tabulka na tablet aj na server***********************
+create table dbo.eAudit_LPAQuestions (
+ID INT NOT NULL IDENTITY PRIMARY KEY,
+Area nvarchar(50),
+Category nvarchar(50),
+QuestionCode nvarchar(20),
+QuestionSK nvarchar(1000),
+QuestionENG nvarchar(1000),
+DailyFrequency int,
+);
+
+
+create table dbo.eAudit_LPAmachinesOrProducts (
+ID INT NOT NULL IDENTITY PRIMARY KEY,
+Area nvarchar(50),
+MachineOrProduct nvarchar(50),
+);
+****************************************************************************************************
+
+
+
+
+***********************************************tabulka LEN na server*********************************************************
+create table dbo.eAudit_LPAResults (
+ID INT NOT NULL IDENTITY PRIMARY KEY,
+AuditNum varchar(100),
+Area nvarchar(50),
+Category nvarchar(50),
+MachineOrProduct nvarchar(50),
+QuestionCode nvarchar(20),
+Question nvarchar(1000),
+Finding nvarchar(1000),
+Result nvarchar(50),
+TimeSpentOnQuestion int,
+Auditor nvarchar(200),
+ConfirmedBy nvarchar(200),
+DateOfAudit datetime,
+Shift nvarchar(50),
+PC nvarchar(50),
+Photo1 varBinary(MAX),
+Photo2 varBinary(MAX),
+Photo3 varBinary(MAX),
+ );
+******************************************************************************************************************************
+
+
+
+
+***********************************************2X tabulka LEN na tablet*********************************************************
+create table dbo.eAudit_LPAResults (
+ID INT NOT NULL IDENTITY PRIMARY KEY,
+AuditNum varchar(100),
+Area nvarchar(50),
+Category nvarchar(50),
+MachineOrProduct nvarchar(50),
+QuestionCode nvarchar(20),
+Question nvarchar(1000),
+Finding nvarchar(1000),
+Result nvarchar(50),
+TimeSpentOnQuestion int,
+Auditor nvarchar(200),
+ConfirmedBy nvarchar(200),
+DateOfAudit datetime,
+Shift nvarchar(50),
+PC nvarchar(50),
+PhotoFileName1 nvarchar(1000),
+CreationTime1 datetime,
+Photo1 varBinary(MAX),
+PhotoFileName2 nvarchar(1000),
+CreationTime2 datetime,
+Photo2 varBinary(MAX),
+PhotoFileName3 nvarchar(1000),
+CreationTime3 datetime,
+Photo3 varBinary(MAX),
+Status nvarchar(50),
+ );
+
+
+create table dbo.eAudit_LPAoverview (
+ID INT NOT NULL IDENTITY PRIMARY KEY,
+AuditNum varchar(100),
+Area nvarchar(50),
+Category nvarchar(50),
+MachineOrProduct nvarchar(50),
+Auditor nvarchar(200),
+DateOfAudit datetime,
+);
+******************************************************************************************************************************
+******************************************************************************************************************************
+--create table dbo.eAudit_People (
+--ID INT NOT NULL IDENTITY PRIMARY KEY,
+--card_id varchar(20),
+--id_doch varchar(8),
+--meno varchar(255),
+--priez varchar(255),
+--);
+******************************************************************************************************************************
+******************************************************************************************************************************
+
+
+
+
+*************************************************PROCEDURA na tablete - sync LPAQuestions zo servera na tablet**************************
+CREATE PROCEDURE eAudit_LPAQuestionsSync
+AS    
+BEGIN
+SET NOCOUNT ON
+SET IDENTITY_INSERT eAudit_LPAQuestions ON
+MERGE eAudit_LPAQuestions AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.eAudit_LPAQuestions  ')) AS source
+ON source.id = target.id
+WHEN MATCHED THEN UPDATE SET Area = source.Area WHEN NOT MATCHED BY TARGET THEN INSERT (id, Area) VALUES (source.id, source.Area)
+WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+MERGE eAudit_LPAQuestions AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.eAudit_LPAQuestions  ')) AS source
+ON source.id = target.id
+WHEN MATCHED THEN UPDATE SET Category = source.Category WHEN NOT MATCHED BY TARGET THEN INSERT (id, Category) VALUES (source.id, source.Category)
+WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+MERGE eAudit_LPAQuestions AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.eAudit_LPAQuestions  ')) AS source
+ON source.id = target.id
+WHEN MATCHED THEN UPDATE SET QuestionCode = source.QuestionCode WHEN NOT MATCHED BY TARGET THEN INSERT (id, QuestionCode) VALUES (source.id, source.QuestionCode)
+WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+MERGE eAudit_LPAQuestions AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.eAudit_LPAQuestions  ')) AS source
+ON source.id = target.id
+WHEN MATCHED THEN UPDATE SET QuestionSK = source.QuestionSK WHEN NOT MATCHED BY TARGET THEN INSERT (id, QuestionSK) VALUES (source.id, source.QuestionSK)
+WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+MERGE eAudit_LPAQuestions AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.eAudit_LPAQuestions  ')) AS source
+ON source.id = target.id
+WHEN MATCHED THEN UPDATE SET QuestionENG = source.QuestionENG WHEN NOT MATCHED BY TARGET THEN INSERT (id, QuestionENG) VALUES (source.id, source.QuestionENG)
+WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+MERGE eAudit_LPAQuestions AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.eAudit_LPAQuestions  ')) AS source
+ON source.id = target.id
+WHEN MATCHED THEN UPDATE SET DailyFrequency = source.DailyFrequency WHEN NOT MATCHED BY TARGET THEN INSERT (id, DailyFrequency) VALUES (source.id, source.DailyFrequency)
+WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+SET NOCOUNT OFF
+END
+*************************************************PROCEDURA na tablete - sync LPAQuestions zo servera na tablet**************************
+
+
+
+
+***************************************************************************************************************************************
+*************************************************PROCEDURA na tablete - sync PeopleCards zo servera na tablet**************************
+--CREATE PROCEDURE eAudit_PeopleCardsSync
+--AS    
+--BEGIN
+--SET NOCOUNT ON
+--SET IDENTITY_INSERT eAudit_People ON
+--MERGE eAudit_People AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.cardsX  ')) AS source
+--ON source.id = target.ID
+--WHEN MATCHED THEN UPDATE SET card_id = source.card_id WHEN NOT MATCHED BY TARGET THEN INSERT (ID, card_id) VALUES (source.id, source.card_id)
+--WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+--MERGE eAudit_People AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.cardsX  ')) AS source
+--ON source.id = target.id
+--WHEN MATCHED THEN UPDATE SET id_doch = source.id_doch WHEN NOT MATCHED BY TARGET THEN INSERT (id, id_doch) VALUES (source.id, source.id_doch)
+--WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+--MERGE eAudit_People AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.cardsX  ')) AS source
+--ON source.id = target.id
+--WHEN MATCHED THEN UPDATE SET meno = source.meno WHEN NOT MATCHED BY TARGET THEN INSERT (id, meno) VALUES (source.id, source.meno)
+--WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+--MERGE eAudit_People AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.cardsX  ')) AS source
+--ON source.id = target.id
+--WHEN MATCHED THEN UPDATE SET priez = source.priez WHEN NOT MATCHED BY TARGET THEN INSERT (id, priez) VALUES (source.id, source.priez)
+--WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+--SET NOCOUNT OFF
+--END
+*************************************************PROCEDURA na tablete - sync PeopleCards zo servera na tablet**************************
+***************************************************************************************************************************************
+
+
+
+
+*************************************************PROCEDURA na tablete - sync LPAResults z tabletu na server***************************
+CREATE PROCEDURE eAudit_LPAResultsSync
+AS    
+BEGIN -- //Replace of audit results from tablet to main table in SKDOC server//--
+SET NOCOUNT ON
+
+DECLARE @ID INT
+DECLARE @AuditNum VARCHAR(100) = null
+DECLARE @Area NVARCHAR(50) = null
+DECLARE @Category NVARCHAR(50) = null
+DECLARE @MachineOrProduct nvarchar(50) = null
+DECLARE @QuestionCode NVARCHAR(20) = null
+DECLARE @Question NVARCHAR(1000) = null
+DECLARE @Finding NVARCHAR(1000) = null
+DECLARE @Result NVARCHAR(50) = null
+DECLARE @TimeSpentOnQuestion int
+DECLARE @Auditor NVARCHAR(200) = null
+DECLARE @ConfirmedBy NVARCHAR(200) = null
+DECLARE @DateOfAudit datetime
+DECLARE @Shift NVARCHAR(50) = null
+DECLARE @PC NVARCHAR(50) = null
+DECLARE @Photo1 varBinary(MAX) = null
+DECLARE @Photo2 varBinary(MAX) = null
+DECLARE @Photo3 varBinary(MAX) = null
+DECLARE @Status nvarchar(50) = null
+BEGIN 
+SELECT @ID = MIN(ID) FROM eAudit_LPAResults WHERE Status IS NOT NULL
+SELECT @AuditNum=AuditNum,@Area=Area,@Category=Category,@MachineOrProduct=MachineOrProduct,@QuestionCode=QuestionCode,@Question=Question,@Finding=Finding,
+@Result=Result,@TimeSpentOnQuestion=TimeSpentOnQuestion,@Auditor=Auditor,@ConfirmedBy=ConfirmedBy,@DateOfAudit=DateOfAudit,@Shift=Shift,@PC=PC,
+@Photo1=Photo1,@Photo2=Photo2,@Photo3=Photo3
+FROM eAudit_LPAResults WHERE ID = @ID
+IF @AuditNum IS NOT NULL
+BEGIN
+INSERT INTO openrowset ('sqloledb', 'SKDOC\SQLEXPRESS';'dwntrg';'dw8091','SELECT * FROM dnwt_short.dbo.eAudit_LPAResults ') 
+(AuditNum,Area,Category,MachineOrProduct,QuestionCode,Question,Finding,Result,TimeSpentOnQuestion,Auditor,ConfirmedBy,DateOfAudit,Shift,PC,Photo1,Photo2,Photo3) 
+values (@AuditNum,@Area,@Category,@MachineOrProduct,@QuestionCode,@Question,@Finding,@Result,@TimeSpentOnQuestion,@Auditor,@ConfirmedBy,@DateOfAudit,@Shift,@PC,@Photo1,@Photo2,@Photo3)
+DELETE FROM eAudit_LPAResults WHERE ID = @ID;
+
+END 
+SET NOCOUNT OFF 
+END
+END
+*************************************************PROCEDURA na tablete - sync LPAResults z tabletu na server***************************
+
+
+
+
+
+*************************************************PROCEDURA na tablete - sync LPAQmachinesOrProducts zo servera na tablet**************************
+CREATE PROCEDURE eAudit_LPAmachinesORproductsSync
+AS    
+BEGIN
+SET NOCOUNT ON
+SET IDENTITY_INSERT eAudit_LPAmachinesOrProducts ON
+MERGE eAudit_LPAmachinesOrProducts AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.eAudit_LPAmachinesOrProducts  ')) AS source
+ON source.id = target.id
+WHEN MATCHED THEN UPDATE SET Area = source.Area WHEN NOT MATCHED BY TARGET THEN INSERT (id, Area) VALUES (source.id, source.Area)
+WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+MERGE eAudit_LPAmachinesOrProducts AS target USING (select * from openrowset ('sqloledb', 'x\SQLEXPRESS';'x';'x','SELECT * FROM dnwt_short.dbo.eAudit_LPAmachinesOrProducts  ')) AS source
+ON source.id = target.id
+WHEN MATCHED THEN UPDATE SET MachineOrProduct = source.MachineOrProduct WHEN NOT MATCHED BY TARGET THEN INSERT (id, MachineOrProduct) VALUES (source.id, source.MachineOrProduct)
+WHEN NOT MATCHED BY SOURCE THEN	DELETE;
+SET NOCOUNT OFF
+END
+*************************************************PROCEDURA na tablete - sync LPAQuestions zo servera na tablet**************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
